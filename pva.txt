@@ -1,0 +1,36 @@
+Projectvisiedocument (PVD)
+
+Projecttitel: Mars Rover Photo Viewer
+
+Datum: 05-03-2024
+
+Projectoverzicht:
+Het Mars Rover Photo Viewer-project heeft tot doel een Python-applicatie te ontwikkelen waarmee gebruikers foto's kunnen bekijken, selecteren en bekijken 
+die zijn gemaakt door verschillende rovers op Mars. De applicatie zal gebruik maken van de beschikbare API's of datasets van NASA om Mars Rover-foto's programmatisch op te halen
+en gebruikers een intuïtieve interface te bieden voor het verkennen en selecteren van afbeeldingen. Bovendien biedt de applicatie de functionaliteit om geselecteerde foto's op de pc 
+van de gebruiker op te slaan.
+
+Projectdoelen:
+
+    . Ontwikkel een Python-applicatie voor het bladeren en selecteren van Mars Rover-foto's.
+    . Integreer de API's of datasets van NASA om Mars Rover-foto's programmatisch op te halen.
+    . Implementeer een gebruiksvriendelijke interface voor eenvoudige navigatie en fotoselectie.
+    . Bied de mogelijkheid om geselecteerde foto's op de pc van de gebruiker op te slaan.
+    . Documenteer de projectcode en het ontwikkelingsproces op GitHub.
+
+overzicht:
+
+    Het project zal zich richten op het creëren van een desktopgebaseerde Python-applicatie.
+    Gebruikers kunnen foto's selecteren op basis van criteria zoals rover, camera en datum.
+    De applicatie haalt foto's op uit de beschikbare API's of datasets van NASA.
+    Foto's worden weergegeven in een gebruiksvriendelijke interface, zodat gebruikers door afbeeldingen kunnen bladeren en deze kunnen selecteren.
+    Geselecteerde foto's kunnen worden opgeslagen op de pc van de gebruiker voor toekomstig gebruik.
+    Het project omvat documentatie van code en projectdetails op GitHub.
+
+Beperkingen:
+
+    De projecttijdlijn is beperkt tot 29-03-2024.
+    De applicatie moet voldoen aan de gebruiksvoorwaarden van NASA voor toegang tot en gebruik van roverfoto's.
+    Compatibiliteit met verschillende besturingssystemen en Python-versies kan beperkingen voor de ontwikkeling opleveren.
+    Beperkte middelen kunnen van invloed zijn op de reikwijdte en kenmerken van de uiteindelijke toepassing.
+
