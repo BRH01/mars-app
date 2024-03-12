@@ -4,6 +4,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import io
 from tkcalendar import DateEntry
+import threading
+import time
 
 class MarsRoverPhotoViewer(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -22,6 +24,9 @@ class MarsRoverPhotoViewer(tk.Tk):
         self.title("Mars Rover Photo Viewer")
         self.geometry("800x600")
         
+        # Centering the window on the screen
+        self.center_window()
+        
         # Configure background color
         self.configure(bg="#D2B48C")  # Sand color
         
@@ -30,7 +35,7 @@ class MarsRoverPhotoViewer(tk.Tk):
         main_frame.pack(expand=True, fill="both", anchor="center")
         
         # Outer border
-        outer_border = ttk.LabelFrame(main_frame, text='Photos', style="Outer.TLabelframe")
+        outer_border = ttk.LabelFrame(main_frame, text='Nasa-OpenData', style="Outer.TLabelframe")
         outer_border.pack(expand=True, fill="both", padx=10, pady=10, anchor="center")
         
         # Inner border for image display
@@ -68,8 +73,8 @@ class MarsRoverPhotoViewer(tk.Tk):
         self.camera_combobox.pack(anchor="center", padx=10, pady=(0, 5))
         
         # Fetch button
-        fetch_button = ttk.Button(outer_border, text="Fetch Photos", command=self.on_fetch_photos_clicked, style="Fetch.TButton")
-        fetch_button.pack(anchor="center", padx=10, pady=(5, 0))
+        self.fetch_button = ttk.Button(outer_border, text="Fetch Photos", command=self.on_fetch_photos_clicked, style="Fetch.TButton")
+        self.fetch_button.pack(anchor="center", padx=10, pady=(5, 0))
         
         # Navigation buttons
         nav_frame = ttk.Frame(outer_border, style="Nav.TFrame")
@@ -92,9 +97,22 @@ class MarsRoverPhotoViewer(tk.Tk):
         self.style.configure("Fetch.TButton", background="#000000", foreground="#000000")  # Fetch button: black background, black text
         self.style.configure("Nav.TFrame", background="#000000")  # Navigation frame: black background
         self.style.configure("Nav.TButton", background="#000000", foreground="#000000")  # Navigation buttons: black background, black text
-        self.style.configure("Photo.TLabel", background="#000000")  # Photo label: black background
+        self.style.configure("Photo.TLabel", background="#000000", anchor="center")  # Photo label: black background, centered image
         self.style.configure("Info.TLabel", background="#000000", foreground="#D2B48C")  # Information label: black background, sand color text
-        
+        self.style.configure("Loading.TLabel", background="#000000", foreground="#FFFFFF")  # Loading label: black background, white text
+
+    def center_window(self):
+        # Get the screen width and height
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calculate the x and y coordinates to center the window
+        x = (screen_width - 800) // 2
+        y = (screen_height - 600) // 2
+
+        # Set the window to center
+        self.geometry(f"800x600+{x}+{y}")
+
     def fetch_photos(self, rover, sol, camera="all", page=1):
         url = f"https://api.nasa.gov/mars-photos/api/v1/rovers/{rover}/photos"
         params = {
@@ -159,6 +177,26 @@ class MarsRoverPhotoViewer(tk.Tk):
             self.show_photo(self.photo_index)
 
     def on_fetch_photos_clicked(self):
+        self.fetch_button.pack_forget()  # Hide the fetch button
+        self.start_loading_animation()
+
+        # Start a new thread to fetch photos
+        threading.Thread(target=self.fetch_photos_async).start()
+
+    def start_loading_animation(self):
+        self.loading_text = "Loading"
+        self.loading_label = ttk.Label(self, text=self.loading_text, style="Loading.TLabel")
+        self.loading_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.loading_animation()
+
+    def loading_animation(self):
+        self.loading_text += "."
+        if len(self.loading_text) > 10:
+            self.loading_text = "Loading"
+        self.loading_label.config(text=self.loading_text)
+        self.after(500, self.loading_animation)
+
+    def fetch_photos_async(self):
         selected_date = self.date_entry.get()
         selected_rover = self.rover_combobox.get()
         selected_camera = self.camera_combobox.get()
@@ -179,6 +217,7 @@ class MarsRoverPhotoViewer(tk.Tk):
                 self.photos.extend(self.fetch_photos(rover, selected_date, camera))
         
         self.display_photos()
+        self.loading_label.destroy()  # Remove the loading label after fetching photos
 
     def on_update_camera_options(self, event):
         selected_rover = self.rover_combobox.get()
