@@ -51,13 +51,12 @@ class MarsRoverPhotoViewer(tk.Tk):
         
         self.date_entry = DateEntry(outer_border, date_pattern="yyyy-mm-dd", style="Entry.TEntry")
         self.date_entry.pack(anchor="center", padx=10, pady=(0, 5))
-        self.date_entry.bind("<<DateEntrySelected>>", self.on_date_selected)
         
         # Rover selection
         rover_label = ttk.Label(outer_border, text="Select Rover:", style="Label.TLabel")
         rover_label.pack(anchor="center", padx=10, pady=(5, 0))
         
-        self.rover_combobox = ttk.Combobox(outer_border, values=[], style="ComboboxRover.TCombobox")
+        self.rover_combobox = ttk.Combobox(outer_border, values=["curiosity", "opportunity", "spirit", "all"], style="ComboboxRover.TCombobox")
         self.rover_combobox.pack(anchor="center", padx=10, pady=(0, 5))
         self.rover_combobox.bind("<<ComboboxSelected>>", self.on_update_camera_options)
         
@@ -65,7 +64,7 @@ class MarsRoverPhotoViewer(tk.Tk):
         camera_label = ttk.Label(outer_border, text="Select Camera:", style="Label.TLabel")
         camera_label.pack(anchor="center", padx=10, pady=(5, 0))
         
-        self.camera_combobox = ttk.Combobox(outer_border, values=[], style="ComboboxCamera.TCombobox")
+        self.camera_combobox = ttk.Combobox(outer_border, values=["FHAZ", "RHAZ", "NAVCAM", "MAST", "CHEMCAM", "MAHLI", "MARDI", "PANCAM", "MINITES", "all"], style="ComboboxCamera.TCombobox")
         self.camera_combobox.pack(anchor="center", padx=10, pady=(0, 5))
         
         # Fetch button
@@ -186,24 +185,8 @@ class MarsRoverPhotoViewer(tk.Tk):
         if selected_rover == "all":
             self.camera_combobox.config(values=["all"])
         else:
-            available_cameras = self.get_available_cameras(selected_rover, self.date_entry.get())
-            self.camera_combobox.config(values=available_cameras)
+            self.camera_combobox.config(values=["FHAZ", "RHAZ", "NAVCAM", "MAST", "CHEMCAM", "MAHLI", "MARDI", "PANCAM", "MINITES", "all"])
         self.camera_combobox.set("all")
-        
-    def on_date_selected(self, event):
-        selected_rover = self.rover_combobox.get()
-        if selected_rover != "all":
-            available_cameras = self.get_available_cameras(selected_rover, self.date_entry.get())
-            self.camera_combobox.config(values=available_cameras)
-        self.camera_combobox.set("all")
-        
-    def get_available_cameras(self, rover, date):
-        available_cameras = []
-        for camera in ["FHAZ", "RHAZ", "NAVCAM", "MAST", "CHEMCAM", "MAHLI", "MARDI", "PANCAM", "MINITES"]:
-            photos = self.fetch_photos(rover, date, camera)
-            if photos:
-                available_cameras.append(camera)
-        return available_cameras
 
 if __name__ == "__main__":
     app = MarsRoverPhotoViewer()
