@@ -6,6 +6,7 @@ import io
 from tkcalendar import DateEntry
 import threading
 import time
+from tkinter import filedialog
 
 class MarsRoverPhotoViewer(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -17,7 +18,6 @@ class MarsRoverPhotoViewer(tk.Tk):
         self.photo_index = 0
         
         self.init_ui()
-        
 
     
     def init_ui(self):
@@ -85,6 +85,9 @@ class MarsRoverPhotoViewer(tk.Tk):
         
         next_button = ttk.Button(nav_frame, text="Next", command=self.next_photo, style="Nav.TButton")
         next_button.pack(side="left")
+        
+        # Save button (initially hidden)
+        self.save_button = ttk.Button(outer_border, text="Save", command=self.save_photo, style="Fetch.TButton")
         
         # Style configuration
         self.style = ttk.Style()
@@ -179,6 +182,7 @@ class MarsRoverPhotoViewer(tk.Tk):
     def on_fetch_photos_clicked(self):
         self.fetch_button.pack_forget()  # Hide the fetch button
         self.start_loading_animation()
+        self.start_rover_animation()
 
         # Start a new thread to fetch photos
         threading.Thread(target=self.fetch_photos_async).start()
@@ -195,6 +199,31 @@ class MarsRoverPhotoViewer(tk.Tk):
             self.loading_text = "Loading"
         self.loading_label.config(text=self.loading_text)
         self.after(500, self.loading_animation)
+
+    def start_rover_animation(self):
+        self.rover_square = ttk.Label(self, width=2, height=2, background="black")
+        self.rover_square.place(relx=0, rely=0, anchor="nw")
+        self.animate_rover()
+
+    def animate_rover(self):
+        self.move_rover()
+        if self.rover_square.winfo_x() >= 785 and self.rover_square.winfo_y() == 0:
+            self.rover_square.destroy()  # Destroy the rover square after completing the animation loop
+        else:
+            self.after(50, self.animate_rover)
+
+    def move_rover(self):
+        x = self.rover_square.winfo_x()
+        y = self.rover_square.winfo_y()
+        if x < 785 and y == 0:
+            x += 5
+        elif x == 785 and y < 585:
+            y += 5
+        elif x > 0 and y == 585:
+            x -= 5
+        elif x == 0 and y > 0:
+            y -= 5
+        self.rover_square.place(x=x, y=y)
 
     def fetch_photos_async(self):
         selected_date = self.date_entry.get()
@@ -226,6 +255,23 @@ class MarsRoverPhotoViewer(tk.Tk):
         else:
             self.camera_combobox.config(values=["FHAZ", "RHAZ", "NAVCAM", "MAST", "CHEMCAM", "MAHLI", "MARDI", "PANCAM", "MINITES", "all"])
         self.camera_combobox.set("all")
+
+    def save_photo(self):
+        if not self.current_photos:
+            return
+        
+        photo = self.current_photos[self.photo_index]
+        img_url = photo["img_src"]
+        img_response = requests.get(img_url)
+        img_data = img_response.content
+        
+        # Open file dialog to choose save location
+        file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
+        
+        if file_path:
+            with open(file_path, "wb") as f:
+                f.write(img_data)
+            print("Image saved successfully.")
 
 if __name__ == "__main__":
     app = MarsRoverPhotoViewer()
