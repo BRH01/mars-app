@@ -65,11 +65,8 @@ class MarsRoverPhotoViewer(tk.Tk):
         nav_frame = ttk.Frame(outer_border, style="Nav.TFrame")
         nav_frame.pack(anchor="center", pady=(10, 5))
         
-        prev_button = ttk.Button(nav_frame, text="Previous", command=self.prev_photo, style="Nav.TButton")
-        prev_button.pack(side="left", padx=(0, 5))
-        
-        next_button = ttk.Button(nav_frame, text="Next", command=self.next_photo, style="Nav.TButton")
-        next_button.pack(side="left")
+        self.prev_button = ttk.Button(nav_frame, text="Previous", command=self.prev_photo, style="Nav.TButton")
+        self.next_button = ttk.Button(nav_frame, text="Next", command=self.next_photo, style="Nav.TButton")
         
         self.save_button = ttk.Button(outer_border, text="Save Photo", command=self.save_photo, style="Save.TButton")
         self.save_button.pack_forget()  # Hide the save button initially
@@ -119,6 +116,8 @@ class MarsRoverPhotoViewer(tk.Tk):
         self.photo_index = 0  
         self.show_photo(self.photo_index)
         self.save_button.pack(anchor="center", padx=10, pady=(5, 0))
+        self.prev_button.pack(side="left", padx=(0, 5))  # Show the previous button
+        self.next_button.pack(side="left")  # Show the next button
 
     def show_photo(self, index):
         if 0 <= index < len(self.current_photos):
