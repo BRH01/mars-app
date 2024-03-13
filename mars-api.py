@@ -150,7 +150,7 @@ class MarsRoverPhotoViewer(tk.Tk):
 
     def on_fetch_photos_clicked(self):
         self.fetch_button.pack_forget()  
-        self.loading_label = ttk.Label(self, text="Loading...", style="Loading.TLabel")
+        self.loading_label = ttk.Label(self, text="Loading..", style="Loading.TLabel")
         self.loading_label.pack(anchor="center", padx=10, pady=(5, 0))
         threading.Thread(target=self.fetch_photos_async).start()
 
