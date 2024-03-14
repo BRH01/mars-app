@@ -183,6 +183,7 @@ class MarsRoverPhotoViewer(tk.Tk):
             
             self.display_photos()
             self.loading_label.pack_forget()  
+            self.fetch_button.pack(anchor="center", padx=10, pady=(5, 0))  # Show the "Fetch Photos" button
             
         except Exception as e:
             print("An error occurred:", str(e))
